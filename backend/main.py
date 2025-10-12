@@ -22,7 +22,7 @@ def load_model():
 
 @app.route("/")
 def root():
-    return {"message": "Prediction Backend API"}
+    return {"message": "Prediction Backend API - Version 2"}
 
 @app.route("/health")
 def health():
