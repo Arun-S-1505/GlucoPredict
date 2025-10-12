@@ -17,8 +17,14 @@ interface FormData {
 interface PredictionResult {
   risk: 'normal' | 'borderline' | 'high';
   message: string;
-  confidence: number;
-  riskScore: number;
+  probabilities: {
+    normal: number;
+    borderline: number;
+    high: number;
+  };
+  predicted_class: number;
+  model_accuracy: number;
+  response_time_ms: number;
 }
 
 export default function PredictionPage() {
@@ -67,47 +73,39 @@ export default function PredictionPage() {
     setLoading(true);
     setResult(null);
 
-    await new Promise(resolve => setTimeout(resolve, 2500));
+    try {
+      const requestData = {
+        pregnancies: parseFloat(formData.pregnancies),
+        glucose: parseFloat(formData.glucose),
+        bloodPressure: parseFloat(formData.bloodPressure),
+        skinThickness: parseFloat(formData.skinThickness),
+        insulin: parseFloat(formData.insulin),
+        bmi: parseFloat(formData.bmi),
+        diabetesPedigree: parseFloat(formData.diabetesPedigree),
+        age: parseFloat(formData.age),
+      };
 
-    const glucose = parseFloat(formData.glucose);
-    const bmi = parseFloat(formData.bmi);
-    const age = parseFloat(formData.age);
-    const diabetesPedigree = parseFloat(formData.diabetesPedigree);
+      const response = await fetch('http://127.0.0.1:8000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      });
 
-    const riskScore =
-      (glucose > 140 ? 30 : glucose > 120 ? 15 : glucose > 100 ? 5 : 0) +
-      (bmi > 30 ? 25 : bmi > 25 ? 10 : 0) +
-      (age > 45 ? 20 : age > 35 ? 10 : 0) +
-      (diabetesPedigree > 0.5 ? 15 : diabetesPedigree > 0.3 ? 8 : 0);
+      if (!response.ok) {
+        throw new Error('Failed to get prediction');
+      }
 
-    // 3-class classification based on risk score
-    let risk: 'normal' | 'borderline' | 'high';
-    let message: string;
-
-    if (riskScore < 20) {
-      risk = 'normal';
-      message = 'Normal - Low Risk of Diabetes';
-    } else if (riskScore < 40) {
-      risk = 'borderline';
-      message = 'Borderline/Pre-diabetic - Moderate Risk of Diabetes';
-    } else {
-      risk = 'high';
-      message = 'High Risk of Diabetes';
+      const prediction: PredictionResult = await response.json();
+      setResult(prediction);
+      toast.success('Prediction completed!');
+    } catch (error) {
+      console.error('Prediction error:', error);
+      toast.error('Failed to get prediction. Please ensure the backend is running.');
+    } finally {
+      setLoading(false);
     }
-
-    const confidence = Math.min(85 + Math.floor(Math.random() * 15), 99);
-
-    const prediction: PredictionResult = {
-      risk: risk,
-      message: message,
-      confidence,
-      riskScore
-    };
-
-    setResult(prediction);
-    setLoading(false);
-
-    toast.success('Prediction completed!');
   };
 
   const inputFields = [
@@ -246,8 +244,27 @@ export default function PredictionPage() {
                           result.risk === 'high' ? 'text-red-700' :
                           result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
                         }`}>
-                          {result.confidence}% Confidence | Risk Score: {result.riskScore}
+                          Model Accuracy: {result.model_accuracy}% | Response Time: {result.response_time_ms}ms
                         </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Probability breakdown */}
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Prediction Probabilities:</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span>Normal:</span>
+                        <span className="font-mono">{(result.probabilities.normal * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Borderline:</span>
+                        <span className="font-mono">{(result.probabilities.borderline * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>High Risk:</span>
+                        <span className="font-mono">{(result.probabilities.high * 100).toFixed(1)}%</span>
                       </div>
                     </div>
                   </div>
