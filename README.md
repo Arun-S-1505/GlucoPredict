@@ -1,4 +1,4 @@
-# 🩺 Diabetes Prediction System
+# 🩺 GlucoPredict - Diabetes Risk Assessment
 
 A full-stack web application for diabetes risk assessment using machine learning. This system provides 3-class classification (Normal, Borderline/Pre-diabetic, High Risk) based on medical health metrics.
 
@@ -48,8 +48,8 @@ A full-stack web application for diabetes risk assessment using machine learning
 ### Quick Start
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/diabetes-prediction-system.git
-cd diabetes-prediction-system
+git clone https://github.com/YOUR_USERNAME/glucopredict.git
+cd glucopredict
 
 # Start Backend (Python/Flask)
 cd backend
@@ -101,7 +101,7 @@ Age: 35
 ## 📁 Project Structure
 
 ```
-diabetes-prediction/
+glucopredict/
 ├── backend/                 # Flask API server
 │   ├── main.py             # Main API application
 │   ├── diabetes_model.h5   # Trained ML model
