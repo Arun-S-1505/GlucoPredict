@@ -84,17 +84,17 @@ export default function LandingPage() {
                 </button>
               </div>
 
-              <div className="flex items-center space-x-8 pt-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-8 pt-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-gray-900">86.4%</div>
                   <div className="text-sm text-gray-600">Model Accuracy</div>
                 </div>
-                <div className="h-12 w-px bg-gray-300"></div>
+                <div className="hidden sm:block h-12 w-px bg-gray-300"></div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-gray-900">10K+</div>
                   <div className="text-sm text-gray-600">Assessments</div>
                 </div>
-                <div className="h-12 w-px bg-gray-300"></div>
+                <div className="hidden sm:block h-12 w-px bg-gray-300"></div>
                 <div className="text-center">
                   <div className="text-3xl font-bold text-gray-900">&lt;100ms</div>
                   <div className="text-sm text-gray-600">Response Time</div>
