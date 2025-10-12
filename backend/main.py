@@ -60,25 +60,36 @@ def predict_diabetes():
         features_scaled = scaler.transform([features])
 
         # Make prediction
-        prediction_prob = model.predict(features_scaled, verbose=0)[0][0]
-        prediction = int(prediction_prob > 0.5)
+        prediction_prob = model.predict(features_scaled, verbose=0)[0]
+        prediction_class = int(np.argmax(prediction_prob))
 
         # Calculate response time
         response_time = time.time() - start_time
 
-        # Determine risk level based on prediction and probability
-        if prediction == 1:
-            risk = "high"
-            message = f"High Risk of Diabetes (Probability: {prediction_prob:.1%})"
-        else:
-            risk = "low"
-            message = f"Low Risk of Diabetes (Probability: {prediction_prob:.1%})"
+        # Determine risk level based on 3-class prediction
+        class_names = ['normal', 'borderline', 'high']
+        risk_messages = {
+            0: "Normal - Low Risk of Diabetes",
+            1: "Borderline/Pre-diabetic - Moderate Risk of Diabetes",
+            2: "High Risk of Diabetes"
+        }
+
+        risk = class_names[prediction_class]
+        message = risk_messages[prediction_class]
+
+        # Format probabilities
+        probabilities = {
+            "normal": float(prediction_prob[0]),
+            "borderline": float(prediction_prob[1]),
+            "high": float(prediction_prob[2])
+        }
 
         return jsonify({
             "risk": risk,
             "message": message,
-            "probability": float(prediction_prob),
-            "model_accuracy": 73.4,  # Test accuracy from training
+            "probabilities": probabilities,
+            "predicted_class": prediction_class,
+            "model_accuracy": 86.4,  # Test accuracy from 3-class training
             "response_time_ms": round(response_time * 1000, 2)
         })
 

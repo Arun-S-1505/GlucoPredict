@@ -14,8 +14,14 @@ interface FormData {
 }
 
 interface PredictionResult {
-  risk: 'high' | 'low';
+  risk: 'normal' | 'borderline' | 'high';
   message: string;
+  probabilities: {
+    normal: number;
+    borderline: number;
+    high: number;
+  };
+  predicted_class: number;
 }
 
 export default function PredictionForm() {
@@ -256,34 +262,63 @@ export default function PredictionForm() {
             <div className={`mt-8 p-6 rounded-xl border-2 ${
               result.risk === 'high'
                 ? 'bg-red-50 border-red-200'
+                : result.risk === 'borderline'
+                ? 'bg-yellow-50 border-yellow-200'
                 : 'bg-green-50 border-green-200'
             } animate-fade-in`}>
               <div className="flex items-center space-x-4">
                 <div className={`p-3 rounded-full ${
-                  result.risk === 'high' ? 'bg-red-100' : 'bg-green-100'
+                  result.risk === 'high' ? 'bg-red-100' :
+                  result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
                 }`}>
                   {result.risk === 'high' ? (
                     <AlertCircle className="w-8 h-8 text-red-600" />
+                  ) : result.risk === 'borderline' ? (
+                    <Activity className="w-8 h-8 text-yellow-600" />
                   ) : (
                     <CheckCircle2 className="w-8 h-8 text-green-600" />
                   )}
                 </div>
                 <div className="flex-1">
                   <h3 className={`text-2xl font-bold ${
-                    result.risk === 'high' ? 'text-red-800' : 'text-green-800'
+                    result.risk === 'high' ? 'text-red-800' :
+                    result.risk === 'borderline' ? 'text-yellow-800' : 'text-green-800'
                   }`}>
                     {result.message}
                   </h3>
                   <p className={`mt-1 ${
-                    result.risk === 'high' ? 'text-red-600' : 'text-green-600'
+                    result.risk === 'high' ? 'text-red-600' :
+                    result.risk === 'borderline' ? 'text-yellow-600' : 'text-green-600'
                   }`}>
                     {result.risk === 'high'
                       ? 'Please consult with a healthcare professional for proper diagnosis and treatment.'
+                      : result.risk === 'borderline'
+                      ? 'Consider lifestyle changes and regular monitoring. Consult a healthcare professional for guidance.'
                       : 'Keep maintaining a healthy lifestyle with proper diet and exercise.'}
                   </p>
+
+                  {/* Probability breakdown */}
+                  <div className="mt-4 p-3 bg-white/50 rounded-lg">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Risk Probabilities:</h4>
+                    <div className="space-y-1 text-sm">
+                      <div className="flex justify-between">
+                        <span>Normal:</span>
+                        <span className="font-mono">{(result.probabilities.normal * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Borderline/Pre-diabetic:</span>
+                        <span className="font-mono">{(result.probabilities.borderline * 100).toFixed(1)}%</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Diabetic:</span>
+                        <span className="font-mono">{(result.probabilities.high * 100).toFixed(1)}%</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <Activity className={`w-12 h-12 ${
-                  result.risk === 'high' ? 'text-red-400' : 'text-green-400'
+                  result.risk === 'high' ? 'text-red-400' :
+                  result.risk === 'borderline' ? 'text-yellow-400' : 'text-green-400'
                 } animate-pulse`} />
               </div>
             </div>

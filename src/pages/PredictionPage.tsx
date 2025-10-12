@@ -15,9 +15,10 @@ interface FormData {
 }
 
 interface PredictionResult {
-  risk: 'high' | 'low';
+  risk: 'normal' | 'borderline' | 'high';
   message: string;
   confidence: number;
+  riskScore: number;
 }
 
 export default function PredictionPage() {
@@ -74,18 +75,33 @@ export default function PredictionPage() {
     const diabetesPedigree = parseFloat(formData.diabetesPedigree);
 
     const riskScore =
-      (glucose > 140 ? 30 : glucose > 120 ? 15 : 0) +
+      (glucose > 140 ? 30 : glucose > 120 ? 15 : glucose > 100 ? 5 : 0) +
       (bmi > 30 ? 25 : bmi > 25 ? 10 : 0) +
       (age > 45 ? 20 : age > 35 ? 10 : 0) +
       (diabetesPedigree > 0.5 ? 15 : diabetesPedigree > 0.3 ? 8 : 0);
 
-    const isHighRisk = riskScore > 40;
+    // 3-class classification based on risk score
+    let risk: 'normal' | 'borderline' | 'high';
+    let message: string;
+
+    if (riskScore < 20) {
+      risk = 'normal';
+      message = 'Normal - Low Risk of Diabetes';
+    } else if (riskScore < 40) {
+      risk = 'borderline';
+      message = 'Borderline/Pre-diabetic - Moderate Risk of Diabetes';
+    } else {
+      risk = 'high';
+      message = 'High Risk of Diabetes';
+    }
+
     const confidence = Math.min(85 + Math.floor(Math.random() * 15), 99);
 
     const prediction: PredictionResult = {
-      risk: isHighRisk ? 'high' : 'low',
-      message: isHighRisk ? 'High Risk of Diabetes' : 'Low Risk of Diabetes',
-      confidence
+      risk: risk,
+      message: message,
+      confidence,
+      riskScore
     };
 
     setResult(prediction);
@@ -188,10 +204,13 @@ export default function PredictionPage() {
                 <div className="relative">
                   <div className="flex items-start space-x-6">
                     <div className={`flex-shrink-0 p-4 rounded-2xl ${
-                      result.risk === 'high' ? 'bg-red-100' : 'bg-green-100'
+                      result.risk === 'high' ? 'bg-red-100' :
+                      result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
                     } shadow-lg`}>
                       {result.risk === 'high' ? (
                         <AlertCircle className="w-12 h-12 text-red-600" />
+                      ) : result.risk === 'borderline' ? (
+                        <Activity className="w-12 h-12 text-yellow-600" />
                       ) : (
                         <CheckCircle2 className="w-12 h-12 text-green-600" />
                       )}
@@ -199,28 +218,35 @@ export default function PredictionPage() {
 
                     <div className="flex-1">
                       <h3 className={`text-3xl font-bold mb-2 ${
-                        result.risk === 'high' ? 'text-red-800' : 'text-green-800'
+                        result.risk === 'high' ? 'text-red-800' :
+                        result.risk === 'borderline' ? 'text-yellow-800' : 'text-green-800'
                       }`}>
                         {result.message}
                       </h3>
                       <p className={`text-lg mb-4 ${
-                        result.risk === 'high' ? 'text-red-700' : 'text-green-700'
+                        result.risk === 'high' ? 'text-red-700' :
+                        result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
                       }`}>
                         {result.risk === 'high'
                           ? 'Our analysis indicates elevated diabetes risk factors. Please consult with a healthcare professional for proper diagnosis and treatment.'
+                          : result.risk === 'borderline'
+                          ? 'Your results suggest pre-diabetic or borderline conditions. Consider lifestyle changes and regular monitoring with a healthcare professional.'
                           : 'Great news! Your current health metrics show a low diabetes risk. Continue maintaining a healthy lifestyle with proper diet and exercise.'}
                       </p>
 
                       <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${
-                        result.risk === 'high' ? 'bg-red-100' : 'bg-green-100'
+                        result.risk === 'high' ? 'bg-red-100' :
+                        result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
                       }`}>
                         <Activity className={`w-4 h-4 ${
-                          result.risk === 'high' ? 'text-red-600' : 'text-green-600'
+                          result.risk === 'high' ? 'text-red-600' :
+                          result.risk === 'borderline' ? 'text-yellow-600' : 'text-green-600'
                         }`} />
                         <span className={`font-semibold ${
-                          result.risk === 'high' ? 'text-red-700' : 'text-green-700'
+                          result.risk === 'high' ? 'text-red-700' :
+                          result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
                         }`}>
-                          {result.confidence}% Confidence
+                          {result.confidence}% Confidence | Risk Score: {result.riskScore}
                         </span>
                       </div>
                     </div>
@@ -242,6 +268,21 @@ export default function PredictionPage() {
                           <li className="flex items-center space-x-2 text-gray-700">
                             <CheckCircle2 className="w-5 h-5 text-red-500" />
                             <span>Consider lifestyle modifications and dietary changes</span>
+                          </li>
+                        </>
+                      ) : result.risk === 'borderline' ? (
+                        <>
+                          <li className="flex items-center space-x-2 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
+                            <span>Consult with a healthcare professional for proper assessment</span>
+                          </li>
+                          <li className="flex items-center space-x-2 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
+                            <span>Consider lifestyle changes: diet, exercise, and weight management</span>
+                          </li>
+                          <li className="flex items-center space-x-2 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
+                            <span>Regular monitoring of blood glucose levels</span>
                           </li>
                         </>
                       ) : (

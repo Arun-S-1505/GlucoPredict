@@ -86,7 +86,7 @@ export default function LandingPage() {
 
               <div className="flex items-center space-x-8 pt-4">
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-900">73.4%</div>
+                  <div className="text-3xl font-bold text-gray-900">86.4%</div>
                   <div className="text-sm text-gray-600">Model Accuracy</div>
                 </div>
                 <div className="h-12 w-px bg-gray-300"></div>
@@ -96,7 +96,7 @@ export default function LandingPage() {
                 </div>
                 <div className="h-12 w-px bg-gray-300"></div>
                 <div className="text-center">
-                  <div className="text-3xl font-bold text-gray-900">&lt;200ms</div>
+                  <div className="text-3xl font-bold text-gray-900">&lt;100ms</div>
                   <div className="text-sm text-gray-600">Response Time</div>
                 </div>
               </div>
