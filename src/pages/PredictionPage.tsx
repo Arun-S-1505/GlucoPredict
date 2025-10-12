@@ -102,7 +102,7 @@ export default function PredictionPage() {
       toast.success('Prediction completed!');
     } catch (error) {
       console.error('Prediction error:', error);
-      toast.error('Failed to get prediction. Please ensure the backend is running.');
+      toast.error('Backend not available. Please deploy the Flask backend to Render/Railway to enable predictions.');
     } finally {
       setLoading(false);
     }
