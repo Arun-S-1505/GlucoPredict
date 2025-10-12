@@ -12,17 +12,18 @@ A full-stack web application for diabetes risk assessment using machine learning
 
 ## 🏗️ Architecture
 
-### Frontend
+### Frontend (Development/Production)
 - **React 18** with TypeScript
 - **Vite** for fast development and building
 - **Tailwind CSS** for styling
 - **React Router** for navigation
+- **Runtime**: Browsers only (no server-side Node.js needed)
 
-### Backend
-- **Flask** REST API
-- **TensorFlow** ML model (3-class classification)
-- **Scikit-learn** for data preprocessing
-- **CORS** enabled for frontend communication
+### Backend (Runtime)
+- **Flask** REST API (Python)
+- **TensorFlow** ML model (Python)
+- **Scikit-learn** for preprocessing (Python)
+- **Runtime**: Python 3.8+ required
 
 ### Machine Learning
 - **3-Class Neural Network**: Trained on Pima Indians Diabetes Dataset
@@ -40,24 +41,28 @@ A full-stack web application for diabetes risk assessment using machine learning
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
-- Node.js (v16+)
-- Python (v3.8+)
-- Git
+- **Python (v3.8+)** - Required for running the Flask backend and ML model
+- **Node.js (v16+)** - Required for building the React frontend (development only)
+- **Git** - For cloning the repository
 
-### Backend Setup
+### Quick Start
 ```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/diabetes-prediction-system.git
+cd diabetes-prediction-system
+
+# Start Backend (Python/Flask)
 cd backend
 pip install -r requirements.txt
-python main.py
-```
-The API will start on `http://localhost:8000`
+python main.py &
+# Backend runs on http://localhost:8000
 
-### Frontend Setup
-```bash
+# Start Frontend (React/Vite)
+cd ..
 npm install
 npm run dev
+# Frontend runs on http://localhost:5173
 ```
-The app will start on `http://localhost:5173`
 
 ## 🔧 Usage
 
