@@ -200,28 +200,28 @@ export default function PredictionPage() {
                 </div>
 
                 <div className="relative">
-                  <div className="flex items-start space-x-6">
-                    <div className={`flex-shrink-0 p-4 rounded-2xl ${
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
+                    <div className={`flex-shrink-0 p-3 sm:p-4 rounded-2xl ${
                       result.risk === 'high' ? 'bg-red-100' :
                       result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
-                    } shadow-lg`}>
+                    } shadow-lg mx-auto sm:mx-0`}>
                       {result.risk === 'high' ? (
-                        <AlertCircle className="w-12 h-12 text-red-600" />
+                        <AlertCircle className="w-10 h-10 sm:w-12 sm:h-12 text-red-600" />
                       ) : result.risk === 'borderline' ? (
-                        <Activity className="w-12 h-12 text-yellow-600" />
+                        <Activity className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600" />
                       ) : (
-                        <CheckCircle2 className="w-12 h-12 text-green-600" />
+                        <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
                       )}
                     </div>
 
-                    <div className="flex-1">
-                      <h3 className={`text-3xl font-bold mb-2 ${
+                    <div className="flex-1 text-center sm:text-left">
+                      <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${
                         result.risk === 'high' ? 'text-red-800' :
                         result.risk === 'borderline' ? 'text-yellow-800' : 'text-green-800'
                       }`}>
                         {result.message}
                       </h3>
-                      <p className={`text-lg mb-4 ${
+                      <p className={`text-base sm:text-lg mb-4 ${
                         result.risk === 'high' ? 'text-red-700' :
                         result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
                       }`}>
@@ -232,7 +232,7 @@ export default function PredictionPage() {
                           : 'Great news! Your current health metrics show a low diabetes risk. Continue maintaining a healthy lifestyle with proper diet and exercise.'}
                       </p>
 
-                      <div className={`inline-flex items-center space-x-2 px-4 py-2 rounded-full ${
+                      <div className={`inline-flex items-center space-x-2 px-3 py-2 sm:px-4 rounded-full text-sm sm:text-base ${
                         result.risk === 'high' ? 'bg-red-100' :
                         result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
                       }`}>
@@ -251,70 +251,76 @@ export default function PredictionPage() {
                   </div>
 
                   {/* Probability breakdown */}
-                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Prediction Probabilities:</h4>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span>Normal:</span>
-                        <span className="font-mono">{(result.probabilities.normal * 100).toFixed(1)}%</span>
+                  <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
+                    <h4 className="text-sm sm:text-base font-semibold text-gray-700 mb-3">Prediction Probabilities:</h4>
+                    <div className="space-y-2 text-sm sm:text-base">
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Normal:</span>
+                        <span className="font-mono bg-green-100 text-green-800 px-2 py-1 rounded text-xs sm:text-sm">
+                          {(result.probabilities.normal * 100).toFixed(1)}%
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>Borderline:</span>
-                        <span className="font-mono">{(result.probabilities.borderline * 100).toFixed(1)}%</span>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">Borderline:</span>
+                        <span className="font-mono bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs sm:text-sm">
+                          {(result.probabilities.borderline * 100).toFixed(1)}%
+                        </span>
                       </div>
-                      <div className="flex justify-between">
-                        <span>High Risk:</span>
-                        <span className="font-mono">{(result.probabilities.high * 100).toFixed(1)}%</span>
+                      <div className="flex justify-between items-center">
+                        <span className="font-medium">High Risk:</span>
+                        <span className="font-mono bg-red-100 text-red-800 px-2 py-1 rounded text-xs sm:text-sm">
+                          {(result.probabilities.high * 100).toFixed(1)}%
+                        </span>
                       </div>
                     </div>
                   </div>
 
                   <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h4 className="font-semibold text-gray-900 mb-3">Recommended Next Steps:</h4>
-                    <ul className="space-y-2">
+                    <h4 className="font-semibold text-gray-900 mb-4 text-base sm:text-lg">Recommended Next Steps:</h4>
+                    <ul className="space-y-3">
                       {result.risk === 'high' ? (
                         <>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500" />
-                            <span>Schedule an appointment with your healthcare provider</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Schedule an appointment with your healthcare provider</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500" />
-                            <span>Monitor your blood glucose levels regularly</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Monitor your blood glucose levels regularly</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500" />
-                            <span>Consider lifestyle modifications and dietary changes</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Consider lifestyle modifications and dietary changes</span>
                           </li>
                         </>
                       ) : result.risk === 'borderline' ? (
                         <>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
-                            <span>Consult with a healthcare professional for proper assessment</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Consult with a healthcare professional for proper assessment</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
-                            <span>Consider lifestyle changes: diet, exercise, and weight management</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Consider lifestyle changes: diet, exercise, and weight management</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500" />
-                            <span>Regular monitoring of blood glucose levels</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Regular monitoring of blood glucose levels</span>
                           </li>
                         </>
                       ) : (
                         <>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500" />
-                            <span>Continue regular health checkups and screenings</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Continue regular health checkups and screenings</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500" />
-                            <span>Maintain a balanced diet and regular exercise routine</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Maintain a balanced diet and regular exercise routine</span>
                           </li>
-                          <li className="flex items-center space-x-2 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500" />
-                            <span>Keep tracking your health metrics over time</span>
+                          <li className="flex items-start space-x-3 text-gray-700">
+                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm sm:text-base">Keep tracking your health metrics over time</span>
                           </li>
                         </>
                       )}
@@ -326,8 +332,8 @@ export default function PredictionPage() {
           )}
         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
+        <div className="mt-8 text-center px-4">
+          <p className="text-xs sm:text-sm text-gray-500 max-w-2xl mx-auto leading-relaxed">
             This is a risk assessment tool and should not replace professional medical advice.
             Always consult with a healthcare provider for medical concerns.
           </p>
