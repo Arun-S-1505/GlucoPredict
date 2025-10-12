@@ -85,7 +85,7 @@ export default function PredictionPage() {
         age: parseFloat(formData.age),
       };
 
-      const response = await fetch('/api/predict', {
+      const response = await fetch('YOUR_RENDER_BACKEND_URL/predict', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
