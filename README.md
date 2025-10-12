@@ -163,4 +163,4 @@ This application is for educational and informational purposes only. It is not a
 
 ---
 
-**Built with ❤️ for healthcare education and awareness**
+**Built with ❤️ for healthcare education and awareness.**
