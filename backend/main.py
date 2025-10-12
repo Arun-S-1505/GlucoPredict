@@ -4,7 +4,7 @@ import numpy as np
 import os
 
 app = Flask(__name__)
-CORS(app, origins=["https://glucopredict.vercel.app", "http://localhost:5173"])  # Allow Vercel frontend and local dev
+CORS(app, origins=["https://glucopredictapp.vercel.app", "https://glucopredict.vercel.app", "http://localhost:5173"])  # Allow both Vercel URLs and local dev
 
 # Global variables for model and scaler
 model = None
