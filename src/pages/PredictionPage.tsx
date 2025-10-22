@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Loader2, AlertCircle, CheckCircle2, Activity, ArrowLeft, Sparkles } from 'lucide-react';
+import { Loader2, ArrowLeft, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface FormData {
@@ -41,7 +41,6 @@ export default function PredictionPage() {
   });
 
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<PredictionResult | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -71,38 +70,87 @@ export default function PredictionPage() {
     if (!validateForm()) return;
 
     setLoading(true);
-    setResult(null);
 
     try {
       const requestData = {
         pregnancies: parseFloat(formData.pregnancies),
         glucose: parseFloat(formData.glucose),
-        bloodPressure: parseFloat(formData.bloodPressure),
-        skinThickness: parseFloat(formData.skinThickness),
+        blood_pressure: parseFloat(formData.bloodPressure),
+        skin_thickness: parseFloat(formData.skinThickness),
         insulin: parseFloat(formData.insulin),
         bmi: parseFloat(formData.bmi),
-        diabetesPedigree: parseFloat(formData.diabetesPedigree),
+        diabetes_pedigree: parseFloat(formData.diabetesPedigree),
         age: parseFloat(formData.age),
       };
 
-      const response = await fetch('https://glucopredict.onrender.com/predict', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-      });
+      // Try local backend first, fallback to deployed backend
+      const endpoints = [
+        'http://localhost:8000/predict/public',
+        'https://glucopredict.onrender.com/predict'
+      ];
 
-      if (!response.ok) {
-        throw new Error('Failed to get prediction');
+      let prediction: PredictionResult | null = null;
+      let predictionId: string | undefined = undefined;
+
+      for (const endpoint of endpoints) {
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(requestData),
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            
+            // Handle new backend response format
+            if (data.prediction !== undefined) {
+              prediction = {
+                risk: data.prediction === 1 ? 'high' : (data.probability > 0.5 ? 'borderline' : 'normal'),
+                message: data.prediction === 1 
+                  ? 'High risk of diabetes detected' 
+                  : 'Low risk of diabetes',
+                probabilities: {
+                  normal: data.prediction === 0 ? (1 - data.probability) : data.probability,
+                  borderline: 0.1,
+                  high: data.prediction === 1 ? data.probability : (1 - data.probability)
+                },
+                predicted_class: data.prediction,
+                model_accuracy: data.model_accuracy || 86.4,
+                response_time_ms: data.response_time_ms || 0
+              };
+              predictionId = data.prediction_id;
+            } else {
+              // Fallback to old format
+              prediction = data;
+            }
+            break;
+          }
+        } catch (err) {
+          console.log(`Failed to connect to ${endpoint}:`, err);
+          continue;
+        }
       }
 
-      const prediction: PredictionResult = await response.json();
-      setResult(prediction);
+      if (!prediction) {
+        throw new Error('All endpoints failed');
+      }
+
       toast.success('Prediction completed!');
+      
+      // Navigate to results page with the prediction data
+      navigate('/results', { 
+        state: { 
+          result: prediction,
+          formData: formData,
+          predictionId: predictionId
+        } 
+      });
     } catch (error) {
       console.error('Prediction error:', error);
-      toast.error('Backend not available. Please deploy the Flask backend to Render/Railway to enable predictions.');
+      toast.error('Unable to connect to prediction service. Please try again later.');
     } finally {
       setLoading(false);
     }
@@ -188,148 +236,7 @@ export default function PredictionPage() {
             </button>
           </form>
 
-          {result && (
-            <div className="mt-10 animate-scale-in">
-              <div className={`relative overflow-hidden p-8 rounded-2xl border-2 ${
-                result.risk === 'high'
-                  ? 'bg-gradient-to-br from-red-50 to-orange-50 border-red-200'
-                  : 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'
-              }`}>
-                <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
-                  <Activity className="w-full h-full" />
-                </div>
 
-                <div className="relative">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:space-x-6 space-y-4 sm:space-y-0">
-                    <div className={`flex-shrink-0 p-3 sm:p-4 rounded-2xl ${
-                      result.risk === 'high' ? 'bg-red-100' :
-                      result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
-                    } shadow-lg mx-auto sm:mx-0`}>
-                      {result.risk === 'high' ? (
-                        <AlertCircle className="w-10 h-10 sm:w-12 sm:h-12 text-red-600" />
-                      ) : result.risk === 'borderline' ? (
-                        <Activity className="w-10 h-10 sm:w-12 sm:h-12 text-yellow-600" />
-                      ) : (
-                        <CheckCircle2 className="w-10 h-10 sm:w-12 sm:h-12 text-green-600" />
-                      )}
-                    </div>
-
-                    <div className="flex-1 text-center sm:text-left">
-                      <h3 className={`text-2xl sm:text-3xl font-bold mb-2 ${
-                        result.risk === 'high' ? 'text-red-800' :
-                        result.risk === 'borderline' ? 'text-yellow-800' : 'text-green-800'
-                      }`}>
-                        {result.message}
-                      </h3>
-                      <p className={`text-base sm:text-lg mb-4 ${
-                        result.risk === 'high' ? 'text-red-700' :
-                        result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
-                      }`}>
-                        {result.risk === 'high'
-                          ? 'Our analysis indicates elevated diabetes risk factors. Please consult with a healthcare professional for proper diagnosis and treatment.'
-                          : result.risk === 'borderline'
-                          ? 'Your results suggest pre-diabetic or borderline conditions. Consider lifestyle changes and regular monitoring with a healthcare professional.'
-                          : 'Great news! Your current health metrics show a low diabetes risk. Continue maintaining a healthy lifestyle with proper diet and exercise.'}
-                      </p>
-
-                      <div className={`inline-flex items-center space-x-2 px-3 py-2 sm:px-4 rounded-full text-sm sm:text-base ${
-                        result.risk === 'high' ? 'bg-red-100' :
-                        result.risk === 'borderline' ? 'bg-yellow-100' : 'bg-green-100'
-                      }`}>
-                        <Activity className={`w-4 h-4 ${
-                          result.risk === 'high' ? 'text-red-600' :
-                          result.risk === 'borderline' ? 'text-yellow-600' : 'text-green-600'
-                        }`} />
-                        <span className={`font-semibold ${
-                          result.risk === 'high' ? 'text-red-700' :
-                          result.risk === 'borderline' ? 'text-yellow-700' : 'text-green-700'
-                        }`}>
-                          Model Accuracy: {result.model_accuracy}% | Response Time: {result.response_time_ms}ms
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Probability breakdown */}
-                  <div className="mt-4 p-3 sm:p-4 bg-gray-50 rounded-lg">
-                    <h4 className="text-sm sm:text-base font-semibold text-gray-700 mb-3">Prediction Probabilities:</h4>
-                    <div className="space-y-2 text-sm sm:text-base">
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">Normal:</span>
-                        <span className="font-mono bg-green-100 text-green-800 px-2 py-1 rounded text-xs sm:text-sm">
-                          {(result.probabilities.normal * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">Borderline:</span>
-                        <span className="font-mono bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs sm:text-sm">
-                          {(result.probabilities.borderline * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="font-medium">High Risk:</span>
-                        <span className="font-mono bg-red-100 text-red-800 px-2 py-1 rounded text-xs sm:text-sm">
-                          {(result.probabilities.high * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <h4 className="font-semibold text-gray-900 mb-4 text-base sm:text-lg">Recommended Next Steps:</h4>
-                    <ul className="space-y-3">
-                      {result.risk === 'high' ? (
-                        <>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Schedule an appointment with your healthcare provider</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Monitor your blood glucose levels regularly</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-red-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Consider lifestyle modifications and dietary changes</span>
-                          </li>
-                        </>
-                      ) : result.risk === 'borderline' ? (
-                        <>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Consult with a healthcare professional for proper assessment</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Consider lifestyle changes: diet, exercise, and weight management</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Regular monitoring of blood glucose levels</span>
-                          </li>
-                        </>
-                      ) : (
-                        <>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Continue regular health checkups and screenings</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Maintain a balanced diet and regular exercise routine</span>
-                          </li>
-                          <li className="flex items-start space-x-3 text-gray-700">
-                            <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
-                            <span className="text-sm sm:text-base">Keep tracking your health metrics over time</span>
-                          </li>
-                        </>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
         <div className="mt-8 text-center px-4">

@@ -1,6 +1,6 @@
-# 🩺 GlucoPredict - Diabetes Risk Assessment
+# 🩺 GlucoPredict - Advanced Diabetes Risk Assessment
 
-A full-stack web application for diabetes risk assessment using machine learning. This system provides 3-class classification (Normal, Borderline/Pre-diabetic, High Risk) based on medical health metrics.
+A comprehensive full-stack web application for diabetes risk assessment using machine learning with integrated user management and prediction history storage via MongoDB Atlas.
 
 ## 🚀 Features
 
