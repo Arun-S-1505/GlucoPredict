@@ -98,35 +98,33 @@ export function LoginPage() {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-2xl w-full max-w-md border border-white/20 relative z-10"
+        className="bg-white/90 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl w-full max-w-md mx-auto border border-white/20 relative z-10"
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="text-center mb-8">
+        <motion.div variants={itemVariants} className="text-center mb-6 sm:mb-8">
           <motion.div
             whileHover={{ scale: 1.1, rotate: 5 }}
-            className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg mb-4"
+            className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl shadow-lg mb-4 mx-auto"
           >
             <Heart className="w-8 h-8 text-white" />
           </motion.div>
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
             Welcome Back
           </h2>
-          <p className="text-gray-600">Sign in to access your diabetes predictions</p>
+          <p className="text-gray-600 text-sm sm:text-base">Sign in to access your diabetes predictions</p>
         </motion.div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
           <motion.div variants={itemVariants}>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Mail className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-              </div>
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-12 pr-4 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                className="w-full pl-10 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
                 placeholder="your@email.com"
                 required
               />
@@ -136,21 +134,19 @@ export function LoginPage() {
           <motion.div variants={itemVariants}>
             <label className="block text-sm font-semibold text-gray-700 mb-2">Password</label>
             <div className="relative group">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <Lock className="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-              </div>
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-12 pr-12 py-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
+                className="w-full pl-10 pr-12 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all duration-200 bg-white/50 backdrop-blur-sm"
                 placeholder="Enter your password"
                 required
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
               >
                 {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </button>
@@ -190,8 +186,8 @@ export function LoginPage() {
         </form>
 
         {/* Links */}
-        <motion.div variants={itemVariants} className="mt-8 space-y-4">
-          <p className="text-center text-gray-600">
+        <motion.div variants={itemVariants} className="mt-6 sm:mt-8 space-y-4">
+          <p className="text-center text-gray-600 text-sm sm:text-base">
             Don't have an account?{' '}
             <Link
               to="/signup"
@@ -204,7 +200,7 @@ export function LoginPage() {
 
           <Link
             to="/"
-            className="flex items-center justify-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors duration-200 group"
+            className="flex items-center justify-center space-x-2 text-gray-500 hover:text-blue-600 transition-colors duration-200 group text-sm"
           >
             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform duration-300" />
             <span>Back to Home</span>
