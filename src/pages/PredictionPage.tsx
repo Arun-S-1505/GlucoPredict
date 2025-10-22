@@ -71,8 +71,7 @@ export default function PredictionPage() {
 
     setLoading(true);
 
-    try {
-      const requestData = {
+    const requestData = {
         pregnancies: parseFloat(formData.pregnancies),
         glucose: parseFloat(formData.glucose),
         blood_pressure: parseFloat(formData.bloodPressure),
@@ -137,13 +136,13 @@ export default function PredictionPage() {
               predictionId: predictionId
             } 
           });
-    } catch (error) {
-      console.error('Prediction error:', error);
-      toast.error('Unable to connect to prediction service. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  };
+      } catch (error) {
+        console.error('Prediction error:', error);
+        toast.error('Unable to connect to prediction service. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
   const inputFields = [
     { name: 'pregnancies', label: 'Pregnancies', placeholder: 'Number of pregnancies', step: '1' },
