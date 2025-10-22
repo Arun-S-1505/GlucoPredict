@@ -41,7 +41,7 @@ export function DashboardPage() {
     
     try {
       const token = localStorage.getItem('glucopredict_token');
-      const response = await axios.get('http://localhost:8000/predictions', {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/predictions`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setPredictions(response.data.predictions || []);

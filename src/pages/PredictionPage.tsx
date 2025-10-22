@@ -83,18 +83,15 @@ export default function PredictionPage() {
         age: parseFloat(formData.age),
       };
 
-      // Try local backend first, fallback to deployed backend
-      const endpoints = [
-        'http://localhost:8000/predict/public',
-        'https://glucopredict.onrender.com/predict'
-      ];
+      // Try configured API URL first, fallback to localhost for development
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const endpoint = `${apiUrl}/predict/public`;
 
       let prediction: PredictionResult | null = null;
       let predictionId: string | undefined = undefined;
 
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(endpoint, {
+      try {
+        const response = await fetch(endpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -126,28 +123,20 @@ export default function PredictionPage() {
               // Fallback to old format
               prediction = data;
             }
-            break;
+          } else {
+            throw new Error('Prediction request failed');
           }
-        } catch (err) {
-          console.log(`Failed to connect to ${endpoint}:`, err);
-          continue;
-        }
-      }
 
-      if (!prediction) {
-        throw new Error('All endpoints failed');
-      }
-
-      toast.success('Prediction completed!');
-      
-      // Navigate to results page with the prediction data
-      navigate('/results', { 
-        state: { 
-          result: prediction,
-          formData: formData,
-          predictionId: predictionId
-        } 
-      });
+          toast.success('Prediction completed!');
+          
+          // Navigate to results page with the prediction data
+          navigate('/results', { 
+            state: { 
+              result: prediction,
+              formData: formData,
+              predictionId: predictionId
+            } 
+          });
     } catch (error) {
       console.error('Prediction error:', error);
       toast.error('Unable to connect to prediction service. Please try again later.');
