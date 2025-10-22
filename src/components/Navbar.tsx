@@ -78,17 +78,17 @@ export default function Navbar() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
             </button>
             <button
-              onClick={handlePredictionClick}
-              className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium relative group"
-            >
-              Prediction
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
-            </button>
-            <button
               onClick={() => scrollToSection('features')}
               className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium relative group"
             >
               Features
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
+            </button>
+            <button
+              onClick={handlePredictionClick}
+              className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium relative group"
+            >
+              Prediction
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 group-hover:w-full transition-all duration-300"></span>
             </button>
 
@@ -158,21 +158,21 @@ export default function Navbar() {
               </button>
               <button
                 onClick={() => {
-                  handlePredictionClick();
-                  setIsMenuOpen(false);
-                }}
-                className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200 font-medium"
-              >
-                Prediction
-              </button>
-              <button
-                onClick={() => {
                   scrollToSection('features');
                   setIsMenuOpen(false);
                 }}
                 className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200 font-medium"
               >
                 Features
+              </button>
+              <button
+                onClick={() => {
+                  handlePredictionClick();
+                  setIsMenuOpen(false);
+                }}
+                className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-md transition-colors duration-200 font-medium"
+              >
+                Prediction
               </button>
               
               {/* Mobile Authentication Section */}

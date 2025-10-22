@@ -13,6 +13,7 @@ A comprehensive full-stack web application for diabetes risk assessment using ma
 ## 🏗️ Architecture
 
 ### Frontend (Development/Production)
+
 - **React 18** with TypeScript
 - **Vite** for fast development and building
 - **Tailwind CSS** for styling
@@ -20,32 +21,36 @@ A comprehensive full-stack web application for diabetes risk assessment using ma
 - **Runtime**: Browsers only (no server-side Node.js needed)
 
 ### Backend (Runtime)
+
 - **Flask** REST API (Python)
 - **TensorFlow** ML model (Python)
 - **Scikit-learn** for preprocessing (Python)
 - **Runtime**: Python 3.8+ required
 
 ### Machine Learning
+
 - **3-Class Neural Network**: Trained on Pima Indians Diabetes Dataset
 - **Accuracy**: 86.4% on test data
 - **Features**: 8 health metrics (Pregnancies, Glucose, Blood Pressure, Skin Thickness, Insulin, BMI, Diabetes Pedigree, Age)
 
 ## 📊 Model Performance
 
-| Class | Description | Typical Glucose Range |
-|-------|-------------|----------------------|
-| Normal | Low Risk | < 100 mg/dL |
-| Borderline | Moderate Risk (Pre-diabetic) | 100-125 mg/dL |
-| High | High Risk | ≥ 126 mg/dL |
+| Class      | Description                  | Typical Glucose Range |
+| ---------- | ---------------------------- | --------------------- |
+| Normal     | Low Risk                     | < 100 mg/dL           |
+| Borderline | Moderate Risk (Pre-diabetic) | 100-125 mg/dL         |
+| High       | High Risk                    | ≥ 126 mg/dL           |
 
 ## 🛠️ Installation & Setup
 
 ### Prerequisites
+
 - **Python (v3.8+)** - Required for running the Flask backend and ML model
 - **Node.js (v16+)** - Required for building the React frontend (development only)
 - **Git** - For cloning the repository
 
 ### Quick Start
+
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/glucopredict.git
@@ -73,6 +78,7 @@ npm run dev
 5. **Get prediction**: Receive instant risk assessment with probabilities
 
 ### Sample Input
+
 ```
 Pregnancies: 2
 Glucose: 110
@@ -85,6 +91,7 @@ Age: 35
 ```
 
 ### Sample Output
+
 ```json
 {
   "risk": "borderline",
@@ -120,6 +127,7 @@ glucopredict/
 ## 🧪 Testing
 
 ### Backend API Testing
+
 ```bash
 cd backend
 python -c "
@@ -134,6 +142,7 @@ print(response.json())
 ```
 
 ### Frontend Testing
+
 ```bash
 npm run build  # Test production build
 npm run preview  # Test production build locally
