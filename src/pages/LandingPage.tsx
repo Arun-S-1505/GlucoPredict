@@ -66,7 +66,7 @@ export default function LandingPage() {
 
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
-                  onClick={() => navigate('/prediction')}
+                  onClick={() => navigate('/login')}
                   className="group inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-cyan-600 text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-2xl hover:scale-105 transform transition-all duration-300"
                 >
                   <span>Start Assessment</span>
@@ -233,7 +233,7 @@ export default function LandingPage() {
                   <h3 className="text-3xl font-bold">Start Your Journey</h3>
                   <p className="text-lg opacity-90">Take control of your health today</p>
                   <button
-                    onClick={() => navigate('/prediction')}
+                    onClick={() => navigate('/login')}
                     className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold hover:shadow-xl transform hover:scale-105 transition-all duration-300"
                   >
                     Begin Assessment

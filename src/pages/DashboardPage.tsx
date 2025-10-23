@@ -9,19 +9,24 @@ import Navbar from '../components/Navbar';
 
 interface Prediction {
   _id: string;
-  features: {
-    pregnancies: number;
-    glucose: number;
-    blood_pressure: number;
-    skin_thickness: number;
-    insulin: number;
-    bmi: number;
-    diabetes_pedigree: number;
-    age: number;
-  };
-  prediction: number;
-  probability: number;
+  pregnancies: number;
+  glucose: number;
+  blood_pressure: number;
+  skin_thickness: number;
+  insulin: number;
+  bmi: number;
+  diabetes_pedigree: number;
+  age: number;
   risk_level: string;
+  risk_message: string;
+  probabilities: {
+    normal: number;
+    borderline: number;
+    high: number;
+  };
+  predicted_class: number;
+  model_accuracy: number;
+  response_time_ms: number;
   created_at: string;
 }
 
@@ -194,20 +199,20 @@ export function DashboardPage() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 lg:gap-4 lg:flex-1">
                       <div className="text-center p-2 bg-white/50 rounded-lg">
                         <p className="text-xs text-gray-500 mb-1">BMI</p>
-                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.features?.bmi?.toFixed(1) || 'N/A'}</p>
+                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.bmi?.toFixed(1) || 'N/A'}</p>
                       </div>
                       <div className="text-center p-2 bg-white/50 rounded-lg">
                         <p className="text-xs text-gray-500 mb-1">Glucose</p>
-                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.features?.glucose || 'N/A'}</p>
+                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.glucose || 'N/A'}</p>
                       </div>
                       <div className="text-center p-2 bg-white/50 rounded-lg">
                         <p className="text-xs text-gray-500 mb-1">Age</p>
-                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.features?.age || 'N/A'}</p>
+                        <p className="text-sm sm:text-lg font-semibold text-gray-900">{prediction.age || 'N/A'}</p>
                       </div>
                       <div className="text-center p-2 bg-white/50 rounded-lg">
-                        <p className="text-xs text-gray-500 mb-1">Risk %</p>
+                        <p className="text-xs text-gray-500 mb-1">High Risk %</p>
                         <p className="text-sm sm:text-lg font-semibold text-gray-900">
-                          {prediction.probability ? (prediction.probability * 100).toFixed(1) + '%' : 'N/A'}
+                          {prediction.probabilities?.high ? (prediction.probabilities.high * 100).toFixed(1) + '%' : 'N/A'}
                         </p>
                       </div>
                     </div>

@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader2, ArrowLeft, Sparkles } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts';
 
 interface FormData {
   pregnancies: string;
@@ -29,6 +30,7 @@ interface PredictionResult {
 
 export default function PredictionPage() {
   const navigate = useNavigate();
+  const { user, token } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     pregnancies: '',
     glucose: '',
@@ -41,6 +43,14 @@ export default function PredictionPage() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      toast.error('Please log in to use the prediction feature');
+      navigate('/login');
+    }
+  }, [user, navigate]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -82,9 +92,10 @@ export default function PredictionPage() {
         age: parseFloat(formData.age),
       };
 
-      // Try configured API URL first, fallback to localhost for development
+      // Use authenticated endpoint to save predictions to database
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-      const endpoint = `${apiUrl}/predict/public`;
+      const endpoint = `${apiUrl}/predict`;
+      const authToken = localStorage.getItem('glucopredict_token');
 
       let prediction: PredictionResult | null = null;
       let predictionId: string | undefined = undefined;
@@ -94,6 +105,7 @@ export default function PredictionPage() {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
+              'Authorization': `Bearer ${authToken}`,
             },
             body: JSON.stringify(requestData),
           });

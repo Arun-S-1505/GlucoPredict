@@ -31,8 +31,12 @@ export default function Navbar() {
   };
 
   const handlePredictionClick = () => {
-    navigate('/prediction');
-    setTimeout(() => scrollToTop(), 100);
+    if (user) {
+      navigate('/prediction');
+      setTimeout(() => scrollToTop(), 100);
+    } else {
+      navigate('/login');
+    }
   };
 
   const handleLogout = () => {
