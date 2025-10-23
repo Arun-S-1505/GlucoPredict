@@ -74,11 +74,11 @@ export default function PredictionPage() {
     const requestData = {
         pregnancies: parseFloat(formData.pregnancies),
         glucose: parseFloat(formData.glucose),
-        blood_pressure: parseFloat(formData.bloodPressure),
-        skin_thickness: parseFloat(formData.skinThickness),
+        bloodPressure: parseFloat(formData.bloodPressure),
+        skinThickness: parseFloat(formData.skinThickness),
         insulin: parseFloat(formData.insulin),
         bmi: parseFloat(formData.bmi),
-        diabetes_pedigree: parseFloat(formData.diabetesPedigree),
+        diabetesPedigree: parseFloat(formData.diabetesPedigree),
         age: parseFloat(formData.age),
       };
 

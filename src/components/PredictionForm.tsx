@@ -81,7 +81,11 @@ export default function PredictionForm() {
         age: parseFloat(formData.age),
       };
 
-      const response = await fetch('http://127.0.0.1:8000/predict', {
+      // Try configured API URL first, fallback to localhost for development
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const endpoint = `${apiUrl}/predict/public`;
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

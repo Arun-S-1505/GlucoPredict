@@ -97,7 +97,7 @@ export function DashboardPage() {
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Your Past Predictions</h1>
               <p className="text-gray-600 text-sm sm:text-base">Track your diabetes risk assessment history</p>
             </div>
-            <Link to="/predict-input" className="flex-shrink-0">
+            <Link to="/prediction" className="flex-shrink-0">
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -147,7 +147,7 @@ export function DashboardPage() {
               <TrendingUp className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
               <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No predictions yet</h3>
               <p className="text-gray-600 text-sm sm:text-base mb-6 max-w-md mx-auto">Start by making your first diabetes risk prediction to see your history here</p>
-              <Link to="/predict-input">
+              <Link to="/prediction">
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
