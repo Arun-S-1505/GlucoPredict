@@ -30,7 +30,7 @@ interface PredictionResult {
 
 export default function PredictionPage() {
   const navigate = useNavigate();
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>({
     pregnancies: '',
     glucose: '',
